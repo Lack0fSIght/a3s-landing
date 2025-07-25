@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessibility as a Service – Compliance Program</title>
+  <!--
+    Fresh, modern layout inspired by MyHeritage.  A white header with the A3S logo on the left,
+    navigation on the right, and a hero section with a dark overlay on the user‑supplied background.
+    All text over the image is white to maximise legibility.
+  -->
+  <style>
+    /* Colour palette variables for easy tweaking.  Purple is the primary accent,
+       supported by green and orange.  Dark text is used on light backgrounds. */
+    :root {
+      --primary-colour: #6a29a8;      /* rich purple accent */
+      --secondary-colour: #008060;    /* deep emerald green */
+      --tertiary-colour: #e68a00;     /* vibrant orange */
+      --text-dark: #111111;           /* almost‑black for high contrast on white */
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.5;
+      color: var(--text-dark);
+      background: #ffffff;
+    }
+
+    /* Header: logo on the left, navigation on the right.  A subtle border separates
+       it from the page content. */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    /* Hide the original logo container (with the huge base64 image) to avoid duplication. */
+    header .logo {
+      display: none;
+    }
+
+    /* Styles for the new A3S logo anchor inserted into the header. */
+    header .a3s-logo {
+      display: block;
+    }
+    header .a3s-logo img {
+      height: 80px;
+      width: auto;
+      display: block;
+    }
+
+    /* Show the A3S logo as a background image on the logo container.  This avoids
+       editing the large inline image and ensures the logo file with tagline is
+       displayed correctly.  The inline data URI image is hidden via the rule below.
+       Adjust the width to fit the logo and tagline. */
+    header .logo {
+      background-image: url('a3s_logo_accessibility_dark.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: left center;
+      /* set an explicit width so the navigation sits to the right */
+      width: 280px;
+      height: 80px;
+    }
+
+    header .logo img {
+      height: 80px;
+      width: auto;
+      display: block;
+    }
+
+    /* Hide any existing inline logo (data URI) so that the local file logo shows instead. */
+    header .logo img[src^="data:image/png"] {
+      display: none;
+    }
+
+    /* Hide all other images inside the logo container so only the background image shows */
+    header .logo img { opacity: 0; }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 500;
+      transition: color 0.2s ease-in-out;
+    }
+    nav a:hover {
+      color: var(--secondary-colour);
+    }
+
+    /* Hero section: two columns on wider screens, stacked on narrow screens.
+       A dark overlay on the background image ensures white text stands out. */
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      /* Reduce right padding to allow the form to sit closer to the page edge */
+      /* Remove right padding entirely so the form can align closer to the edge */
+      padding: 4rem 0 4rem 2rem;
+      /* Embed the hero background image as a Base64 data URI so the page is self‑contained when hosted anywhere. */
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('data:image/jpeg;base64,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
+      background-size: cover;
+      background-position: center;
+      color: #ffffff;
+      /* Space between hero columns pushes the form to the far right */
+      justify-content: space-between;
+    }
+
+    .hero-content {
+      flex: 1 1 50%;
+      max-width: 650px;
+      /* Increase spacing between the left content and form, which in turn shifts the form further right */
+      margin-right: 3rem;
+    }
+
+    .hero-content h1 {
+      margin: 0 0 1rem 0;
+      font-size: 2.5rem;
+      color: #ffffff;
+    }
+
+    .hero-content .subheadline {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: #ffffff;
+    }
+
+    .hero-content ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hero-content li {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-content .icon {
+      margin-right: 0.6rem;
+      font-size: 1.3rem;
+      line-height: 1.3;
+    }
+
+    /* Colour each bullet icon with an accent colour for variety. */
+    .hero-content li:nth-of-type(1) .icon { color: var(--secondary-colour); }
+    .hero-content li:nth-of-type(2) .icon { color: var(--tertiary-colour); }
+    .hero-content li:nth-of-type(3) .icon { color: var(--primary-colour); }
+    .hero-content li:nth-of-type(4) .icon { color: var(--secondary-colour); }
+
+    .hero-form {
+      flex: 1 1 40%;
+      max-width: 420px;
+      background: #ffffff;
+      color: var(--text-dark);
+      padding: 2rem;
+      border: 2px solid var(--primary-colour);
+      border-radius: 8px;
+      margin-top: 1rem;
+      /* Push the form to the far right of the hero row */
+      margin-left: auto;
+    }
+
+    .hero-form h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.6rem;
+      color: var(--primary-colour);
+    }
+
+    .hero-form label {
+      display: block;
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+
+    .hero-form input,
+    .hero-form textarea {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      background: #ffffff;
+      border: 1px solid var(--primary-colour);
+      border-radius: 4px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      color: var(--text-dark);
+    }
+    .hero-form input::placeholder,
+    .hero-form textarea::placeholder {
+      color: #666666;
+    }
+
+    .hero-form button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1.5rem;
+      background: var(--primary-colour);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .hero-form button:hover {
+      background: #5a238e;
+    }
+
+    /* Trust badges row – simple circles with coloured borders. */
+    .trust-logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      border-top: 1px solid #e5e5e5;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .trust-logos .intro {
+      font-weight: 500;
+      margin-right: 1rem;
+      color: var(--text-dark);
+    }
+    .trust-logos .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 0.5rem;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    .trust-logos .badge:nth-of-type(1) {
+      border: 2px solid var(--secondary-colour);
+      color: var(--secondary-colour);
+    }
+    .trust-logos .badge:nth-of-type(2) {
+      border: 2px solid var(--tertiary-colour);
+      color: var(--tertiary-colour);
+    }
+    .trust-logos .badge:nth-of-type(3) {
+      border: 2px solid var(--primary-colour);
+      color: var(--primary-colour);
+    }
+
+    /* Clients section: show logos only. */
+    .clients {
+      text-align: center;
+      padding: 2rem 2rem;
+      border-top: 1px solid var(--primary-colour);
+      border-bottom: 1px solid var(--primary-colour);
+    }
+    .clients .intro {
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: var(--text-dark);
+    }
+    .client-logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+    .client-logos img {
+      max-height: 60px;
+      height: auto;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* Generic section styling used for the features and CTA. */
+    .section {
+      padding: 3rem 2rem;
+    }
+    .section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: var(--primary-colour);
+    }
+
+    /* Features grid. */
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .feature {
+      flex: 1 1 260px;
+      background: #ffffff;
+      border: 1px solid var(--primary-colour);
+      border-radius: 8px;
+      padding: 1.5rem;
+      color: var(--text-dark);
+    }
+    .feature .icon {
+      font-size: 2rem;
+      color: var(--primary-colour);
+      margin-bottom: 0.5rem;
+    }
+    .feature h3 {
+      margin: 0.5rem 0;
+      font-size: 1.4rem;
+      color: var(--primary-colour);
+    }
+    .feature p {
+      font-size: 0.95rem;
+      color: #333333;
+      margin: 0;
+    }
+
+    /* Call‑to‑action section. */
+    .cta {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(to right, #f7f9fc, #ffffff);
+      border-top: 2px solid var(--primary-colour);
+      border-bottom: 2px solid var(--primary-colour);
+    }
+    .cta h2 {
+      margin: 0 0 1rem 0;
+      font-size: 2rem;
+      color: var(--text-dark);
+    }
+    .cta p {
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+      font-size: 1.1rem;
+      line-height: 1.4;
+      color: var(--text-dark);
+    }
+    .cta button {
+      background: var(--tertiary-colour);
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .cta button:hover {
+      background: #c76d00;
+    }
+
+    /* Responsive tweaks for small screens. */
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+      }
+      .hero-content {
+        margin-right: 0;
+      }
+      .hero-form {
+        margin-top: 2rem;
+        max-width: 100%;
+      }
+      .features {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Insert our new visible A3S logo at the very start of the header -->
+    <a class="a3s-logo" href="https://p15r.com" target="_blank" rel="noopener">
+      <img src="a3s_logo_accessibility_dark.png" alt="A3S Accessibility as a Service logo">
+    </a>
+    <div class="logo">
+      <!-- Use the provided A3S logo with tagline.  This file must exist in the same folder. -->
+      <!-- Embed the A3S logo inline as a data URI so it always loads regardless of external files. -->
+      <img src="data:image/png;base64,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[... truncated due to long string ...]A==" alt="A3S Accessibility as a Service logo">
+    </div>
+    <nav>
+      <a href="#">About&nbsp;Us</a>
+      <a href="#">Services</a>
+      <a href="#">How&nbsp;We&nbsp;Do&nbsp;It</a>
+      <a href="#">Why&nbsp;Choose&nbsp;Us</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact&nbsp;Us</a>
+      <a href="#">Resources</a>
+    </nav>
+  </header>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Accessibility Compliance Simplified</h1>
+      <p class="subheadline">Continuous testing &amp; monitoring to achieve and maintain WCAG&nbsp;2.2 compliance.</p>
+      <ul>
+        <!-- Use distinct emojis for each point to visually reinforce the key message.  
+             1. Tools for manual testing and remediation.  
+             2. Checklist to represent dividing the process into phases.  
+             3. Money bag for affordability.  
+             4. Scales for legal compliance. -->
+        <li><span class="icon">🛠️</span>Handle everything—manual testing, WCAG&nbsp;2.2&nbsp;AA remediation, an Accessibility Statement and VPAT.</li>
+        <li><span class="icon">📋</span>Divide the work into Assessment, Audit, Remediation, Validation and Monitoring.</li>
+        <li><span class="icon">💰</span>Affordable monthly subscription with no hidden costs; includes 100&nbsp;pages of document remediation (offer ends&nbsp;March 31,&nbsp;2025).</li>
+        <li><span class="icon">⚖️</span>Guaranteed compliance with HB21‑1110, ADA Title II and Section 508.</li>
+      </ul>
+    </div>
+    <div class="hero-form">
+      <h2>Get Your Website Compliant Now</h2>
+      <form action="#" method="post">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Work email</label>
+        <input type="email" id="email" name="email" required>
+        <label for="company">Company or organisation</label>
+        <input type="text" id="company" name="company" required>
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" name="phone">
+        <label for="website">Website to test</label>
+        <input type="url" id="website" name="website" placeholder="https://">
+        <button type="submit">Get&nbsp;Started</button>
+      </form>
+      <p style="font-size:0.8rem; color:#555555; margin-top:0.5rem;">By submitting this form you consent to our collection and use of the information you provide as described in our <a href="#" style="color: var(--primary-colour); text-decoration: underline;">privacy policy</a>.</p>
+    </div>
+  </section>
+  <section class="trust-logos">
+    <span class="intro">Trusted by government agencies and businesses across the USA</span>
+    <div class="badge">ADA</div>
+    <div class="badge">508</div>
+    <div class="badge">HB21‑1110</div>
+  </section>
+  <section class="clients">
+    <p class="intro">Trusted by a wide range of public and private organisations</p>
+    <div class="client-logos">
+      <img src="https://p15r.com/wp-content/uploads/2025/01/Seal_of_Colorado.svg-1.png" alt="State of Colorado logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.56.17.png" alt="Mercer logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/moo_mortgage_horiz_654c.png" alt="Mutual of Omaha Mortgage logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.57.34.png" alt="Oprah Winfrey Charitable Foundation logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.57.45.png" alt="Fordham University logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.57.50.png" alt="Alarm logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.58.24.png" alt="Modere logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.58.17.png" alt="State of Alaska logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.58.11.png" alt="Concorde logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.58.04.png" alt="Jackson Healthcare logo">
+      <img src="https://p15r.com/wp-content/uploads/2024/06/Screenshot-2024-06-08-at-16.57.56.png" alt="MRO Accessibility Clinical Data Exchange logo">
+    </div>
+  </section>
+  <section class="section">
+    <h2>How it works</h2>
+    <div class="features">
+      <div class="feature">
+        <div class="icon">✔</div>
+        <h3>Assessment</h3>
+        <p>Evaluate your site’s unique page templates.  The assessment report identifies which templates and pages will be tested during the audit phase.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">✔</div>
+        <h3>Audit</h3>
+        <p>Conduct comprehensive manual testing.  Our audit details each WCAG violation, links to the relevant success criteria, specifies the affected user type, and offers remediation guidance.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">✔</div>
+        <h3>Remediation</h3>
+        <p>Fix accessibility issues uncovered in the audit.  We implement code and content changes to meet WCAG&nbsp;2.2&nbsp;AA requirements across your site and documents.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">✔</div>
+        <h3>Validation</h3>
+        <p>Verify fixes with assistive technologies including screen readers (JAWS, NVDA, TalkBack, VoiceOver), contrast adjusters, magnifiers and other devices to ensure real‑world usability.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">✔</div>
+        <h3>Monitoring</h3>
+        <p>Provide monthly testing and reporting to keep your site compliant as content and technology evolve.  Continuous monitoring is required by ADA and state laws.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">✔</div>
+        <h3>Accessibility&nbsp;Statement &amp; VPAT</h3>
+        <p>Create an accessibility statement for your footer and deliver an updated VPAT documenting your WCAG conformance once remediation is complete.</p>
+      </div>
+    </div>
+  </section>
+  <section class="cta">
+    <h2>Ready to achieve compliance now and forever?</h2>
+    <p>Join the Accessibility as a Service program today.  Our team will handle the heavy lifting so you can stay focused on your mission while meeting WCAG, ADA and state accessibility requirements.</p>
+    <button onclick="document.getElementById('name').focus()">Get Your Website Compliant Now</button>
+  </section>
+</body>
+</html>
